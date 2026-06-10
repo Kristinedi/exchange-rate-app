@@ -1,5 +1,17 @@
 <script setup lang="ts">
+import { tables } from '@/routes';
 import LatestExchangeRates from '@/components/ExchangeRates/LatestRates/LatestExchangeRates.vue';
+
+defineOptions({
+    layout: {
+        breadcrumbs: [
+            {
+                title: 'Tables',
+                href: tables(),
+            },
+        ],
+    },
+});
 </script>
 
 <template>

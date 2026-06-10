@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import { useAuth } from '@/composables/useAuth';
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import { dashboard } from '@/routes';
+import { Sticker } from 'lucide-vue-next';
 
 defineOptions({
     layout: {
@@ -13,10 +15,17 @@ defineOptions({
         ],
     },
 });
+
+const { user } = useAuth();
 </script>
 
 <template>
     <Head title="Dashboard" />
+
+    <h1 class="m-4 text-2xl font-semibold tracking-tight">
+        Hi, {{ user.name }}!
+        <Sticker class="ml-2 inline h-9 w-9 pb-1 text-red-500" />
+    </h1>
 
     <div
         class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"

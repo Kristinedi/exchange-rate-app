@@ -14,14 +14,13 @@ const props = defineProps<{
     filteredRates: ExchangeRate[];
 }>();
 
-let colTitles = ['Code', 'Currency', 'Rate'];
-
+const colTitles = ['Code', 'Currency', 'Rate'];
 </script>
 
 <template>
     <div class="w-full max-w-lg">
-        <h3 class="text-lg pb-5">
-            Exchange rates for {{ fromCurrency.code }} ({{ fromCurrency.name }}): 
+        <h3 class="pb-5 text-lg">
+            Exchange rates for {{ fromCurrency.code }} ({{ fromCurrency.name }}):
         </h3>
         <Table>
             <TableHeader>
@@ -31,17 +30,23 @@ let colTitles = ['Code', 'Currency', 'Rate'];
                     </TableHead>
                 </TableRow>
             </TableHeader>
-            <div v-if="filteredRates.length === 0" class="text-muted-foreground pl-1 pt-4">
-                Please select currencies to view rates.
-            </div>
-            <TableBody v-else>
-                <TableRow v-for="rate in filteredRates" :key="rate.to_currency_id" class="border-gray-400">
+            <TableBody>
+                <TableRow
+                    v-for="rate in filteredRates"
+                    :key="rate.to_currency_id"
+                    class="border-gray-400"
+                >
                     <TableCell>{{ rate.to_currency }}</TableCell>
                     <TableCell>{{ rate.to_currency_name }}</TableCell>
                     <TableCell>{{ rate.rate }}</TableCell>
                 </TableRow>
             </TableBody>
-            
         </Table>
+        <div
+            v-if="filteredRates.length === 0"
+            class="pt-4 pl-1 text-muted-foreground"
+        >
+            Please select target currencies to view rates.
+        </div>
     </div>
 </template>

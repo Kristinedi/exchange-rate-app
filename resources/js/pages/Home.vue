@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { dashboard, login, register } from '@/routes';
+import { useAuth } from '@/composables/useAuth';
 import LatestExchangeRates from '@/components/ExchangeRates/LatestRates/LatestExchangeRates.vue';
-// import ExchangeRateChart from '@/components/ExchangeRateChart.vue';
+
+const { user } = useAuth();
 
 withDefaults(
     defineProps<{
@@ -21,7 +23,7 @@ withDefaults(
             class="fixed top-0 right-0 hidden px-6 py-4 sm:block"
         >
             <Link
-                v-if="$page.props.auth.user"
+                v-if="user"
                 :href="dashboard()"
                 class="text-sm text-gray-700 underline dark:text-gray-500"
             >
@@ -35,7 +37,7 @@ withDefaults(
                 Log in
             </Link>
             <Link
-                v-if="!$page.props.auth.user && canRegister"
+                v-if="!user && canRegister"
                 :href="register()"
                 class="ml-4 text-sm text-gray-700 underline dark:text-gray-500"
             >
@@ -44,9 +46,6 @@ withDefaults(
         </div>
         <div class="mx-auto max-w-7xl">
             <LatestExchangeRates />
-        </div>
-        <div>
-            <!-- <ExchangeRateChart /> -->
         </div>
     </div>
 </template>
