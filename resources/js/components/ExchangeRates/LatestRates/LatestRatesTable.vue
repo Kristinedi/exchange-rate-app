@@ -9,12 +9,16 @@ import {
 } from '@/components/ui/table';
 import type { Currency, ExchangeRate } from '@/types';
 
-const props = defineProps<{
+defineProps<{
     fromCurrency: Currency;
     filteredRates: ExchangeRate[];
 }>();
 
-const colTitles = ['Code', 'Currency', 'Rate'];
+const colTitles = [
+    { label: 'Code', class: '' },
+    { label: 'Currency', class: 'hidden sm:table-cell' },
+    { label: 'Rate', class: '' },
+];
 </script>
 
 <template>
@@ -25,8 +29,8 @@ const colTitles = ['Code', 'Currency', 'Rate'];
         <Table>
             <TableHeader>
                 <TableRow class="border-gray-600">
-                    <TableHead v-for="title in colTitles" :key="title">
-                        {{ title }}
+                    <TableHead v-for="title in colTitles" :key="title.label" :class="title.class">
+                        {{ title.label }}
                     </TableHead>
                 </TableRow>
             </TableHeader>
@@ -37,7 +41,7 @@ const colTitles = ['Code', 'Currency', 'Rate'];
                     class="border-gray-400"
                 >
                     <TableCell>{{ rate.to_currency }}</TableCell>
-                    <TableCell>{{ rate.to_currency_name }}</TableCell>
+                    <TableCell class="hidden sm:table-cell">{{ rate.to_currency_name }}</TableCell>
                     <TableCell>{{ rate.rate }}</TableCell>
                 </TableRow>
             </TableBody>

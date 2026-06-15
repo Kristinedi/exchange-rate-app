@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useAuth } from '@/composables/useAuth';
 import LatestRatesCard from '@/components/ExchangeRates/LatestRates/LatestRatesCard.vue';
+import TableSwitcher from '@/components/ExchangeRates/LatestRates/TableSwitcher.vue';
 import type { Currency, ExchangeRate, Table, SavedTable } from '@/types';
 
 const props = defineProps<{
@@ -32,19 +33,15 @@ const defaultFromCurrency = computed<Currency>(() => {
 
 const displayNames = computed(() => {
     const tableNameCount: Record<string, number> = {};
-    const result = new Map<number, string>();
+    const result: Record<number, string> = {};
 
     for (const table of tables.value) {
         const name = table.name;
-
         tableNameCount[name] = (tableNameCount[name] ?? 0) + 1;
-
-        result.set(
-            table.id,
+        result[table.id] =
             tableNameCount[name] === 1
                 ? name
-                : `${name} (${tableNameCount[name]})`,
-        );
+                : `${name} (${tableNameCount[name]})`;
     }
 
     return result;
@@ -136,7 +133,7 @@ const renameTable = (tableId: number, newName: string) => {
     const table = tables.value.find((t) => t.id === tableId);
 
     if (!table) return;
-    
+
     table.name = newName;
     table.isRenamed = true;
 };
@@ -151,7 +148,9 @@ const removeTable = (tableId: number) => {
 
 const showNotification = (message: string, type: 'success' | 'error') => {
     notification.value = { message, type };
-    setTimeout(() => { notification.value = null; }, 4000);
+    setTimeout(() => {
+        notification.value = null;
+    }, 4000);
 };
 
 const saveTables = async () => {
@@ -170,8 +169,11 @@ const saveTables = async () => {
         });
 
         showNotification('Tables saved successfully!', 'success');
-    } catch (e) {
-        showNotification('Failed to save tables. Please try again later.', 'error');
+    } catch {
+        showNotification(
+            'Failed to save tables. Please try again later.',
+            'error',
+        );
     }
 };
 
@@ -203,22 +205,13 @@ onMounted(() => {
         Please add a table to view rates.
     </div>
 
-    <div v-else class="flex items-stretch">
-        <div class="my-6 flex w-[150px] flex-col gap-2 break-words">
-            <button
-                v-for="table in tables"
-                :key="table.id"
-                @click="switchTable(table.id)"
-                :class="[
-                    'rounded-l px-3 py-2 text-left text-sm',
-                    activeTableId === table.id
-                        ? 'bg-amber-100'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-                ]"
-            >
-                {{ displayNames.get(table.id) }}
-            </button>
-        </div>
+    <div v-else class="items-stretch md:flex">
+        <TableSwitcher
+            :tables="tables"
+            :active-table-id="activeTableId"
+            :display-names="displayNames"
+            @update:active-table-id="switchTable"
+        />
 
         <div class="flex-1">
             <LatestRatesCard

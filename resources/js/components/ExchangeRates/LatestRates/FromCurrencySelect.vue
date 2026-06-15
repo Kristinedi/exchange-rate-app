@@ -32,7 +32,7 @@ const fromCurrencies = computed(() => [
 </script>
 
 <template>
-    <div class="md:pb-6">
+    <div class="pb-6">
         <div class="pb-1">Select currency</div>
         <Select
             :model-value="modelValue"

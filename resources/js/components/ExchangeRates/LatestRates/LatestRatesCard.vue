@@ -24,6 +24,7 @@ const emit = defineEmits<{
 const selectedFromCurrency = ref<Currency>(props.table.fromCurrency);
 const selectedToCurrencies = ref<Currency[]>(props.table.toCurrencies);
 const renameError = ref('');
+const showControls = ref(false);
 
 const baseFilteredRates = computed(() =>
     props.rates.filter(
@@ -49,6 +50,11 @@ const filteredRates = computed(() =>
         selectedToCurrencies.value.some((c) => c.id === r.to_currency_id),
     ),
 );
+
+const nameModel = computed({
+    get: () => props.newName,
+    set: (value) => emit('update:newName', value),
+});
 
 const rename = () => {
     if (props.existingNames.includes(props.newName)) {
@@ -84,26 +90,27 @@ watch(toCurrencies, (newCurrencies) => {
 </script>
 
 <template>
-    <div class="mb-4 min-h-full gap-16 rounded bg-amber-100 p-8 md:flex">
-        <LatestRatesTable
-            :from-currency="selectedFromCurrency"
-            :filtered-rates="filteredRates"
-        />
-        <div class="flex flex-col justify-between">
+    <div
+        class="mb-4 flex sm:w-lg lg:w-md xl:w-3xl flex-col xl:gap-16 rounded bg-amber-100 p-4 sm:p-8 xl:flex-row xl:flex-wrap"
+    >
+        <button
+            @click="showControls = !showControls"
+            class="mb-6 self-start rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 xl:hidden"
+        >
+            {{ showControls ? 'Hide edit' : 'Edit' }}
+        </button>
+        <div
+            class="flex flex-col justify-between xl:order-2 xl:ml-auto"
+            :class="{ 'hidden xl:flex': !showControls }"
+        >
             <FromCurrencySelect v-model="selectedFromCurrency" :rates="rates" />
             <ToCurrencyDropdown
                 v-model="selectedToCurrencies"
                 :to-currencies="toCurrencies"
             />
-            <div>
+            <div class="w-64">
                 <Input
-                    :value="newName"
-                    @input="
-                        emit(
-                            'update:newName',
-                            ($event.target as HTMLInputElement).value,
-                        )
-                    "
+                    v-model="nameModel"
                     type="text"
                     maxlength="30"
                     placeholder="Enter table name"
@@ -112,7 +119,7 @@ watch(toCurrencies, (newCurrencies) => {
                 <div class="text-right text-xs text-gray-400">
                     {{ 30 - newName.length }} / 30
                 </div>
-                <div class="flex justify-end">
+                <div class="flex justify-end mb-6">
                     <button
                         @click="rename"
                         :disabled="newName.length === 0"
@@ -125,14 +132,20 @@ watch(toCurrencies, (newCurrencies) => {
                     {{ renameError }}
                 </div>
             </div>
-            <div class="flex justify-end">
-                <button
-                    @click="emit('delete-table')"
-                    class="mt-7 rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                >
-                    Delete table
-                </button>
-            </div>
+        </div>
+        <div class="flex h-full flex-col xl:order-1">
+            <LatestRatesTable
+                :from-currency="selectedFromCurrency"
+                :filtered-rates="filteredRates"
+            />
+        </div>
+        <div class="flex w-full justify-end xl:order-3">
+            <button
+                @click="emit('delete-table')"
+                class="mt-7 rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+            >
+                Delete table
+            </button>
         </div>
     </div>
 </template>

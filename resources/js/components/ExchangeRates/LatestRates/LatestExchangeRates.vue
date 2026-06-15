@@ -22,7 +22,7 @@ const fetchRates = async (): Promise<void> => {
 useEchoPublic('exchange-rates', '.rates.updated', async () => {
     try {
         await fetchRates();
-    } catch (e) {
+    } catch {
         // keep showing previous rates
     }
 });
@@ -36,7 +36,7 @@ onMounted(async () => {
         const response = await axios.get('/api/user-exchange-rate-tables');
 
         savedTables.value = response.data;
-    } catch (e) {
+    } catch {
         error.value = 'Failed to load data. Please try again later.';
     } finally {
         isLoading.value = false;
