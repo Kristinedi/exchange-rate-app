@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/composables/useAuth';
 import FromCurrencySelect from '@/components/ExchangeRates/LatestRates/FromCurrencySelect.vue';
 import LatestRatesTable from '@/components/ExchangeRates/LatestRates/LatestRatesTable.vue';
 import ToCurrencyDropdown from '@/components/ExchangeRates/LatestRates/ToCurrencyDropdown.vue';
@@ -25,6 +26,7 @@ const selectedFromCurrency = ref<Currency>(props.table.fromCurrency);
 const selectedToCurrencies = ref<Currency[]>(props.table.toCurrencies);
 const renameError = ref('');
 const showControls = ref(false);
+const { isAuthenticated } = useAuth();
 
 const baseFilteredRates = computed(() =>
     props.rates.filter(
@@ -91,7 +93,8 @@ watch(toCurrencies, (newCurrencies) => {
 
 <template>
     <div
-        class="mb-4 flex sm:w-lg lg:w-md xl:w-3xl flex-col xl:gap-16 rounded bg-amber-100 p-4 sm:p-8 xl:flex-row xl:flex-wrap"
+        class="mb-4 flex flex-col xl:gap-16 rounded bg-amber-100 p-4 sm:p-8 xl:flex-row xl:flex-wrap"
+        :class="isAuthenticated ? 'sm:w-lg lg:w-md xl:w-3xl' : 'sm:w-lg xl:w-3xl'"
     >
         <button
             @click="showControls = !showControls"

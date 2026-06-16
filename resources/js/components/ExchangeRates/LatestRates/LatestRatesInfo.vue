@@ -190,66 +190,72 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="mb-6 flex items-center gap-4">
-        <button
-            @click="addTable"
-            :disabled="tables.length >= 5"
-            class="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-            + Add new table
-        </button>
-        <div class="text-sm text-muted-foreground">Add up to 5 tables</div>
-    </div>
-
-    <div v-if="tables.length === 0" class="py-4 pl-1 text-muted-foreground">
-        Please add a table to view rates.
-    </div>
-
-    <div v-else class="items-stretch md:flex">
-        <TableSwitcher
-            :tables="tables"
-            :active-table-id="activeTableId"
-            :display-names="displayNames"
-            @update:active-table-id="switchTable"
-        />
-
-        <div class="flex-1">
-            <LatestRatesCard
-                v-for="table in tables"
-                :key="table.id"
-                v-show="activeTableId === table.id"
-                v-model:new-name="table.newName"
-                :table="table"
-                :rates="rates"
-                :existing-names="
-                    tables.filter((t) => t.id !== table.id).map((t) => t.name)
-                "
-                @update:from-currency="
-                    (currency) => updateFromCurrency(table.id, currency)
-                "
-                @update:to-currencies="
-                    (currencies) => updateToCurrencies(table.id, currencies)
-                "
-                @rename-table="(newName) => renameTable(table.id, newName)"
-                @delete-table="() => removeTable(table.id)"
-            />
-        </div>
-    </div>
     <div>
-        <button
-            v-if="isAuthenticated"
-            @click="saveTables"
-            class="my-2 rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+        <div class="mb-6 flex items-center gap-4">
+            <button
+                @click="addTable"
+                :disabled="tables.length >= 5"
+                class="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+                + Add new table
+            </button>
+            <div class="text-sm text-muted-foreground">Add up to 5 tables</div>
+        </div>
+
+        <div v-if="tables.length === 0" class="py-4 pl-1 text-muted-foreground">
+            Please add a table to view rates.
+        </div>
+
+        <div v-else class="items-stretch md:flex">
+            <TableSwitcher
+                :tables="tables"
+                :active-table-id="activeTableId"
+                :display-names="displayNames"
+                @update:active-table-id="switchTable"
+            />
+
+            <div class="flex-1">
+                <LatestRatesCard
+                    v-for="table in tables"
+                    :key="table.id"
+                    v-show="activeTableId === table.id"
+                    v-model:new-name="table.newName"
+                    :table="table"
+                    :rates="rates"
+                    :existing-names="
+                        tables
+                            .filter((t) => t.id !== table.id)
+                            .map((t) => t.name)
+                    "
+                    @update:from-currency="
+                        (currency) => updateFromCurrency(table.id, currency)
+                    "
+                    @update:to-currencies="
+                        (currencies) => updateToCurrencies(table.id, currencies)
+                    "
+                    @rename-table="(newName) => renameTable(table.id, newName)"
+                    @delete-table="() => removeTable(table.id)"
+                />
+            </div>
+        </div>
+        <div>
+            <button
+                v-if="isAuthenticated"
+                @click="saveTables"
+                class="my-2 rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            >
+                Save
+            </button>
+        </div>
+        <div
+            v-if="notification"
+            :class="
+                notification.type === 'success'
+                    ? 'text-green-500'
+                    : 'text-red-500'
+            "
         >
-            Save
-        </button>
-    </div>
-    <div
-        v-if="notification"
-        :class="
-            notification.type === 'success' ? 'text-green-500' : 'text-red-500'
-        "
-    >
-        {{ notification.message }}
+            {{ notification.message }}
+        </div>
     </div>
 </template>

@@ -55,7 +55,7 @@ onMounted(async () => {
         </div>
         <div v-else-if="isLoading">Loading...</div>
         <div v-else-if="rates.length === 0">No rates available.</div>
-        <div v-else>
+        <div v-else class="flex flex-col items-center">
             <LatestRatesInfo :rates="rates" :saved-tables="savedTables" />
         </div>
     </div>

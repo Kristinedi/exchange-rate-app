@@ -4,7 +4,7 @@ import { dashboard, login, register } from '@/routes';
 import { useAuth } from '@/composables/useAuth';
 import LatestExchangeRates from '@/components/ExchangeRates/LatestRates/LatestExchangeRates.vue';
 
-const { user } = useAuth();
+const { user, isAuthenticated } = useAuth();
 
 withDefaults(
     defineProps<{
@@ -17,7 +17,10 @@ withDefaults(
 </script>
 
 <template>
-    <div class="items-top relative min-h-screen bg-gray-100 sm:p-36">
+    <div
+        class="items-top relative min-h-screen bg-gray-100"
+        :class="isAuthenticated ? 'sm:p-36' : 'p-8 lg:p-36'"
+    >
         <div
             v-if="canRegister"
             class="fixed top-0 right-0 hidden px-6 py-4 sm:block"
